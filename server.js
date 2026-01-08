@@ -26,27 +26,30 @@ app.listen(port, () => {
     console.log('Server running on port', port);
 });
 
-// Example Route: Get all cards
-app.get('/allcards', async (req, res) => {
+// Example Route: Get all books
+app.get('/allbooks', async (req, res) => {
     try {
         let connection = await mysql.createConnection(dbConfig);
-        const [rows] = await connection.execute('SELECT * FROM defaultdb.cards');
+        const [rows] = await connection.execute('SELECT * FROM defaultdb.books');
         res.json(rows);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error for allcards' });
+        res.status(500).json({ message: 'Server error for allbooks' });
     }
 });
 
-// Example Route: Create a new card
-app.post('/addcard', async (req, res) => {
-    const { card_name, card_pic } = req.body;
+// Example Route: Create a new book
+app.post('/addbook', async (req, res) => {
+    const { book_name, book_author, book_img } = req.body;
     try {
         let connection = await mysql.createConnection(dbConfig);
-        await connection.execute('INSERT INTO cards (card_name, card_pic) VALUES (?, ?)', [card_name, card_pic]);
-        res.status(201).json({ message: 'Card ' +card_name+ ' added successfully' });
+        await connection.execute('INSERT INTO books (book_name, book_author, book_img) VALUES (?, ?, ?)', [book_name, book_author, book_img]);
+        res.status(201).json({ message: 'Book ' +book_name+ ' added successfully' });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error - could not add card ' +card_name });
+        res.status(500).json({ message: 'Server error - could not add book ' +book_name });
     }
 });
+
+// Example Route: Update a new book
+app.put('/updatebook')
