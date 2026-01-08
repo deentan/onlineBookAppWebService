@@ -52,4 +52,31 @@ app.post('/addbook', async (req, res) => {
 });
 
 // Example Route: Update a new book
-app.put('/updatebook')
+app.put('/updatebook/:id', async (req, res) => {
+    const { id } = req.params;
+    const { book_name, book_author, book_img } = req.body;
+    try {
+        let connection = await mysql.createConnection(dbConfig);
+        await connection.execute(
+            'UPDATE books SET book_name = ?, book_author = ?, book_img = ? WHERE book_id = ?',
+            [book_name, book_author, book_img, id]
+        );
+        res.json({ message: 'Book ' + id + ' updated successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error - could not update book ' + id });
+    }
+});
+
+// Delete a book
+app.delete('/deletebook/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        let connection = await mysql.createConnection(dbConfig);
+        await connection.execute('DELETE FROM books WHERE book_id = ?', [id]);
+        res.json({ message: 'Book ' + id + ' deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error - could not delete book ' + id });
+    }
+});
